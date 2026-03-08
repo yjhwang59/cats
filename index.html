@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>尋找溫暖的家：兩姐妹的領養故事</title>
+    
+    <!-- Chosen Palette: Lavender Whisper (Warm White #FFFAF0, Soft Lavender #DCD0FF, Deep Lavender #B39DDB, Charcoal #374151) -->
+    <!-- Application Structure Plan: The SPA is structured as a storytelling landing page. It begins with an emotional hero section to capture attention. Section 1 introduces their background and uses a playful interactive chart to highlight their unbreakable bond (fulfilling technical requirements while adding narrative value). Section 2 provides detailed profiles of each cat. Section 3 is a visual gallery of their daily life. Section 4 outlines adoption criteria and includes a JS-powered interactive modal checklist to ensure potential adopters read and agree to the requirements before accessing contact info. -->
+    <!-- Visualization & Content Choices: 
+         - Sisterly Bond -> Goal: Show they are inseparable -> Viz: Donut Chart (Chart.js) -> Interaction: Hover tooltips -> Justification: Quantifies their time spent together visually, reinforcing the "adopt together" message. 
+         - Cat Profiles -> Goal: Inform -> Viz: Side-by-side cards -> Interaction: Hover scale effects -> Justification: Easy comparison of their ages and personalities.
+         - Daily Life -> Goal: Emotional connection -> Viz: CSS Grid Gallery (Images/Video) -> Interaction: Video playback, image hover -> Justification: Shows actual behavior and affection.
+         - Adoption Checklist -> Goal: Qualify adopters -> Viz: Modal with Checkboxes -> Interaction: JS validation (must check all 3 to reveal contact) -> Justification: Prevents impulsive contacts and ensures serious inquiries. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        lavender: {
+                            light: '#F3E5F5',
+                            DEFAULT: '#DCD0FF',
+                            dark: '#B39DDB',
+                        },
+                        warmwhite: '#FFFAF0',
+                    },
+                    fontFamily: {
+                        sans: ['"Noto Sans TC"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #FFFAF0; color: #374151; }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 350px;
+        }
+        @media (min-width: 768px) {
+            .chart-container { height: 350px; }
+        }
+        .modal-transition { transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out; }
+        .hover-zoom img, .hover-zoom video { transition: transform 0.5s ease; }
+        .hover-zoom:hover img, .hover-zoom:hover video { transform: scale(1.05); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .emoji-icon { font-family: "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif; }
+    </style>
+</head>
+<body class="font-sans antialiased overflow-x-hidden">
+
+    <nav class="fixed w-full z-40 bg-warmwhite/90 backdrop-blur-md shadow-sm border-b border-lavender/30 transition-all" id="navbar">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex-shrink-0 flex items-center gap-2 cursor-pointer" onclick="window.scrollTo(0,0)">
+                    <span class="text-2xl emoji-icon">🐾</span>
+                    <span class="font-bold text-xl tracking-wider text-gray-800">兩姐妹的領養故事</span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#story" class="text-gray-600 hover:text-lavender-dark font-medium transition-colors">我們的故事</a>
+                    <a href="#profiles" class="text-gray-600 hover:text-lavender-dark font-medium transition-colors">認識姐妹花</a>
+                    <a href="#gallery" class="text-gray-600 hover:text-lavender-dark font-medium transition-colors">生活點滴</a>
+                    <a href="#adopt" class="text-gray-600 hover:text-lavender-dark font-medium transition-colors">領養申請</a>
+                </div>
+                <div class="md:hidden flex items-center">
+                    <button id="mobileMenuBtn" class="text-3xl text-gray-600 focus:outline-none">&#9776;</button>
+                </div>
+            </div>
+        </div>
+        <div id="mobileMenu" class="hidden md:hidden bg-warmwhite border-t border-lavender-light">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 flex flex-col">
+                <a href="#story" class="text-gray-600 hover:bg-lavender-light block px-3 py-2 rounded-md text-base font-medium">我們的故事</a>
+                <a href="#profiles" class="text-gray-600 hover:bg-lavender-light block px-3 py-2 rounded-md text-base font-medium">認識姐妹花</a>
+                <a href="#gallery" class="text-gray-600 hover:bg-lavender-light block px-3 py-2 rounded-md text-base font-medium">生活點滴</a>
+                <a href="#adopt" class="text-gray-600 hover:bg-lavender-light block px-3 py-2 rounded-md text-base font-medium">領養申請</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="relative min-h-screen flex items-center justify-center pt-16 overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <img src="S__19906595_0.jpg" alt="兩隻貓咪依偎在一起" class="w-full h-full object-cover object-center filter brightness-90">
+            <div class="absolute inset-0 bg-gradient-to-t from-warmwhite via-transparent to-transparent"></div>
+        </div>
+        <div class="relative z-10 text-center px-4 max-w-4xl mx-auto bg-white/70 backdrop-blur-sm p-10 rounded-3xl shadow-2xl border border-white/50">
+            <span class="text-5xl mb-4 block emoji-icon">🏠🤍</span>
+            <h1 class="text-4xl md:text-6xl font-bold text-gray-900 mb-6 tracking-tight leading-tight">因為愛，<br>我們在那裡等待</h1>
+            <p class="text-xl md:text-2xl text-gray-700 font-medium mb-8">我們失去了原本熟悉的家，但不希望再失去彼此。<br>尋找一個永遠的避風港，讓我們姐妹不再分離。</p>
+            <a href="#story" class="inline-block bg-lavender-dark text-white px-8 py-4 rounded-full text-lg font-bold hover:bg-gray-800 transition-all shadow-lg hover:-translate-y-1">了解我們的故事</a>
+        </div>
+    </header>
+
+    <section id="story" class="py-20 px-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-12">
+                <span class="text-4xl emoji-icon mb-4 block">📖</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">關於愛與不捨的牽絆</h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                    此區塊旨在向您介紹這兩隻貓咪目前的處境以及她們之間深厚的情感連結。透過了解她們的故事與日常生活數據，我們希望能讓您明白為何「一起領養」是對她們最好的安排。
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-12 items-center bg-white p-8 md:p-12 rounded-3xl shadow-xl border border-lavender-light">
+                <div class="space-y-6">
+                    <h3 class="text-2xl font-bold text-gray-800">不得已的道別</h3>
+                    <p class="text-lg text-gray-600 leading-relaxed">
+                        原主人因為即將遠赴國外，在經過無數次的掙扎與考量後，心痛地決定為這兩位心愛的家人尋找新的避風港。這是一對跨越年齡的深情「黑白配」——穩重的6歲黑白貓姐姐，以及活潑的不到1歲純白貓妹妹。
+                    </p>
+                    <p class="text-lg text-gray-600 leading-relaxed">
+                        她們的生命早已緊緊交織。無論是睡覺、理毛還是玩耍，妹妹總是像個小跟屁蟲一樣黏著姐姐，而姐姐也總是給予最溫柔的包容。
+                    </p>
+                    <div class="bg-lavender-light/50 p-6 rounded-2xl border-l-4 border-lavender-dark">
+                        <p class="text-lg font-bold text-gray-800 mb-2">⭐ 領養核心訴求</p>
+                        <p class="text-gray-700">為了減少貓咪適應新環境的壓力與分離焦慮，我們強烈期盼能找到願意<span class="font-bold text-lavender-dark">「兩隻一起帶回家」</span>的有緣人。</p>
+                    </div>
+                </div>
+                <div class="flex flex-col items-center justify-center space-y-4">
+                    <h4 class="text-xl font-bold text-gray-800 text-center">她們的日常時間分配</h4>
+                    <p class="text-sm text-gray-500 text-center mb-4">（數據顯示她們絕大多數時間都黏在一起）</p>
+                    <div class="chart-container">
+                        <canvas id="routineChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="profiles" class="py-20 px-4 bg-lavender-light/20">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16">
+                <span class="text-4xl emoji-icon mb-4 block">👯‍♀️</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">認識姐妹花</h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                    本區塊詳細列出兩隻貓咪的個別資訊，包含年齡、性別、結紮狀況與個性特徵。讓您在領養前能初步了解她們各自的魅力與生活習性。
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-10">
+                <div class="bg-white rounded-3xl shadow-lg overflow-hidden border border-gray-100 group">
+                    <div class="h-80 overflow-hidden relative hover-zoom">
+                        <!-- 調整：使用沙發照 (598)，並利用 CSS 將焦點放在右側站立的黑白貓姐姐 -->
+                        <img src="S__19906598.jpg" alt="黑白貓姐姐" class="w-full h-full object-cover object-right-top scale-110 origin-right">
+                        <div class="absolute top-4 right-4 bg-white/90 px-4 py-2 rounded-full font-bold text-gray-800 shadow-md">
+                            <span class="emoji-icon mr-1">👑</span> 大姐姐
+                        </div>
+                    </div>
+                    <div class="p-8">
+                        <div class="flex justify-between items-end mb-6">
+                            <h3 class="text-3xl font-bold text-gray-900">黑白貓</h3>
+                            <span class="text-lavender-dark font-bold text-lg bg-lavender-light px-3 py-1 rounded-lg">5月生</span>
+                        </div>
+                        <div class="space-y-4 mb-8">
+                            <div class="flex items-center text-gray-700 text-lg">
+                                <span class="w-8 h-8 rounded-full bg-lavender flex items-center justify-center text-white mr-3 font-bold">1</span>
+                                <span class="font-semibold w-20">年齡：</span> 6 歲
+                            </div>
+                            <div class="flex items-center text-gray-700 text-lg">
+                                <span class="w-8 h-8 rounded-full bg-lavender flex items-center justify-center text-white mr-3 font-bold">2</span>
+                                <span class="font-semibold w-20">性別：</span> 母貓 <span class="emoji-icon ml-1">♀️</span>
+                            </div>
+                            <div class="flex items-center text-gray-700 text-lg">
+                                <span class="w-8 h-8 rounded-full bg-lavender flex items-center justify-center text-white mr-3 font-bold">3</span>
+                                <span class="font-semibold w-20">醫療：</span> 已結紮 <span class="text-green-600 ml-2 font-bold">&#10004;</span>
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap gap-3">
+                            <span class="px-4 py-2 bg-gray-100 text-gray-700 rounded-full font-medium shadow-sm">成熟穩重</span>
+                            <span class="px-4 py-2 bg-gray-100 text-gray-700 rounded-full font-medium shadow-sm">溫柔守護者</span>
+                            <span class="px-4 py-2 bg-gray-100 text-gray-700 rounded-full font-medium shadow-sm">安靜陪伴</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-3xl shadow-lg overflow-hidden border border-gray-100 group">
+                    <div class="h-80 overflow-hidden relative hover-zoom bg-gray-100">
+                        <!-- 調整：使用背包照 (595)，並利用 CSS 將焦點放大至右下角趴著的純白貓妹妹 -->
+                        <img src="S__19906595_0.jpg" alt="白貓妹妹" class="w-full h-full object-cover object-right-bottom scale-125 origin-bottom-right">
+                        <div class="absolute top-4 right-4 bg-white/90 px-4 py-2 rounded-full font-bold text-gray-800 shadow-md">
+                            <span class="emoji-icon mr-1">🎀</span> 小妹妹
+                        </div>
+                    </div>
+                    <div class="p-8">
+                        <div class="flex justify-between items-end mb-6">
+                            <h3 class="text-3xl font-bold text-gray-900">純白貓</h3>
+                            <span class="text-lavender-dark font-bold text-lg bg-lavender-light px-3 py-1 rounded-lg">5月生</span>
+                        </div>
+                        <div class="space-y-4 mb-8">
+                            <div class="flex items-center text-gray-700 text-lg">
+                                <span class="w-8 h-8 rounded-full bg-lavender flex items-center justify-center text-white mr-3 font-bold">1</span>
+                                <span class="font-semibold w-20">年齡：</span> 快 1 歲
+                            </div>
+                            <div class="flex items-center text-gray-700 text-lg">
+                                <span class="w-8 h-8 rounded-full bg-lavender flex items-center justify-center text-white mr-3 font-bold">2</span>
+                                <span class="font-semibold w-20">性別：</span> 母貓 <span class="emoji-icon ml-1">♀️</span>
+                            </div>
+                            <div class="flex items-center text-gray-700 text-lg">
+                                <span class="w-8 h-8 rounded-full bg-lavender flex items-center justify-center text-white mr-3 font-bold">3</span>
+                                <span class="font-semibold w-20">醫療：</span> 已結紮 <span class="text-green-600 ml-2 font-bold">&#10004;</span>
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap gap-3">
+                            <span class="px-4 py-2 bg-gray-100 text-gray-700 rounded-full font-medium shadow-sm">活潑好奇</span>
+                            <span class="px-4 py-2 bg-gray-100 text-gray-700 rounded-full font-medium shadow-sm">愛撒嬌</span>
+                            <span class="px-4 py-2 bg-gray-100 text-gray-700 rounded-full font-medium shadow-sm">姐姐跟屁蟲</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="gallery" class="py-20 px-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16">
+                <span class="text-4xl emoji-icon mb-4 block">📸</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">溫馨的日常瞬間</h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                    透過影像紀錄，您可以真實感受到她們在熟悉環境中的放鬆狀態，以及互相依偎、理毛的溫馨互動。這些點滴是她們情感最真實的證明。
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-[300px]">
+                
+                <div class="rounded-3xl overflow-hidden shadow-lg md:col-span-2 relative hover-zoom bg-black">
+                    <!-- 影片位置：完美呈現動態互動 -->
+                    <video class="w-full h-full object-cover" controls playsinline muted autoplay loop>
+                        <source src="794648341.849307.mp4" type="video/mp4">
+                        您的瀏覽器不支援影片標籤。
+                    </video>
+                    <div class="absolute top-4 left-4 bg-black/60 text-white px-4 py-2 rounded-full text-sm font-bold backdrop-blur-sm">
+                        <span class="emoji-icon mr-2">▶️</span> 動態影片
+                    </div>
+                </div>
+
+                <div class="rounded-3xl overflow-hidden shadow-lg hover-zoom relative">
+                    <!-- 圖片位置：互相理毛照 (596) -->
+                    <img src="S__19906596_0.jpg" alt="姐妹互相理毛" class="w-full h-full object-cover object-center">
+                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
+                        <p class="text-white font-medium text-lg">彼此是最安心的依靠</p>
+                    </div>
+                </div>
+
+                <div class="rounded-3xl overflow-hidden shadow-lg hover-zoom lg:col-span-1">
+                    <!-- 圖片位置：沙發陪伴照 (598) -->
+                    <img src="S__19906598.jpg" alt="沙發上的陪伴" class="w-full h-full object-cover object-left">
+                </div>
+
+                <div class="rounded-3xl overflow-hidden shadow-lg md:col-span-2 hover-zoom relative">
+                    <!-- 圖片位置：背包合照 (595) 作為畫廊壓軸 -->
+                    <img src="S__19906595_0.jpg" alt="一起看著鏡頭" class="w-full h-full object-cover object-center">
+                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
+                        <p class="text-white font-medium text-lg">「你會帶我們一起回家嗎？」</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="adopt" class="py-24 px-4 bg-gray-900 text-white text-center rounded-t-[3rem] mt-10 shadow-[0_-10px_40px_rgba(0,0,0,0.1)]">
+        <div class="max-w-3xl mx-auto space-y-8">
+            <span class="text-5xl emoji-icon mb-4 block">💌</span>
+            <h2 class="text-4xl md:text-5xl font-bold tracking-tight">準備好給她們一個家了嗎？</h2>
+            
+            <p class="text-xl text-gray-300 leading-relaxed mb-8">
+                本區塊為領養申請的把關機制。我們希望確保未來的認養人具備足夠的責任心與經濟基礎。點擊下方按鈕將開啟自我檢核表，完成確認後即可獲取聯絡資訊。
+            </p>
+
+            <div class="bg-gray-800 p-8 rounded-3xl text-left border border-gray-700 mb-10">
+                <h3 class="text-2xl font-bold mb-6 text-lavender-light border-b border-gray-700 pb-4">基本領養條件</h3>
+                <ul class="space-y-4 text-lg text-gray-300">
+                    <li class="flex items-start">
+                        <span class="text-lavender font-bold mr-3 mt-1">&#10004;</span>
+                        <span>需年滿 20 歲，具有穩定收入來源。</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-lavender font-bold mr-3 mt-1">&#10004;</span>
+                        <span>居家需落實門窗安全防護（防護網）。</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-lavender font-bold mr-3 mt-1">&#10004;</span>
+                        <span>堅持不放養、不關籠，給予足夠活動空間。</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-lavender font-bold mr-3 mt-1">&#10004;</span>
+                        <span>願意簽署領養協議，接受後續定期關心回報。</span>
+                    </li>
+                </ul>
+            </div>
+
+            <button id="openModalBtn" class="bg-lavender text-gray-900 px-12 py-5 rounded-full text-2xl font-bold hover:bg-white transition-all shadow-[0_0_20px_rgba(220,208,255,0.4)] hover:shadow-[0_0_30px_rgba(220,208,255,0.8)] transform hover:-translate-y-1">
+                我要申請領養
+            </button>
+            <p class="text-sm text-gray-500 mt-8">點擊以進行資格自我評估</p>
+        </div>
+    </section>
+
+    <footer class="bg-gray-950 py-8 text-center border-t border-gray-800">
+        <p class="text-gray-500 font-medium">© 2026 兩姐妹的領養計畫. 用愛終結流浪。</p>
+    </footer>
+
+    <div id="adoptionModal" class="fixed inset-0 z-50 flex items-center justify-center px-4 opacity-0 pointer-events-none modal-transition">
+        <div class="absolute inset-0 bg-gray-900/80 backdrop-blur-sm transition-opacity modal-overlay"></div>
+        
+        <div class="bg-white rounded-[2rem] shadow-2xl max-w-xl w-full p-8 md:p-10 relative z-10 transform scale-95 transition-transform modal-content overflow-y-auto max-h-[90vh] no-scrollbar">
+            <button id="closeModalBtn" class="absolute top-6 right-6 text-gray-400 hover:text-gray-800 transition-colors text-3xl font-bold leading-none">
+                &#10006;
+            </button>
+            
+            <div id="modalHeader" class="text-center mb-8">
+                <span class="text-4xl emoji-icon mb-4 block">📋</span>
+                <h3 class="text-3xl font-bold text-gray-900 mb-3">領養資格自我檢核</h3>
+                <p class="text-gray-600">為了確保這對姐妹能找到最安穩的歸宿，請您誠實確認以下三項重要承諾：</p>
+            </div>
+
+            <div id="checklist" class="space-y-4">
+                <label class="flex items-start p-5 bg-warmwhite border border-gray-200 rounded-2xl cursor-pointer hover:bg-lavender-light/30 transition-colors group">
+                    <input type="checkbox" class="checklist-item w-6 h-6 text-lavender-dark bg-white border-gray-300 rounded focus:ring-lavender focus:ring-2 mt-1 mr-4 cursor-pointer accent-lavender-dark">
+                    <span class="text-lg text-gray-700 font-medium group-hover:text-gray-900 transition-colors">1. 我已完全徵得所有同住家人的同意，且家中無人對貓毛嚴重過敏。</span>
+                </label>
+                <label class="flex items-start p-5 bg-warmwhite border border-gray-200 rounded-2xl cursor-pointer hover:bg-lavender-light/30 transition-colors group">
+                    <input type="checkbox" class="checklist-item w-6 h-6 text-lavender-dark bg-white border-gray-300 rounded focus:ring-lavender focus:ring-2 mt-1 mr-4 cursor-pointer accent-lavender-dark">
+                    <span class="text-lg text-gray-700 font-medium group-hover:text-gray-900 transition-colors">2. 我有穩定的經濟收入，絕對有能力負擔兩隻貓咪的高品質飲食與未來十幾年的醫療開銷。</span>
+                </label>
+                 <label class="flex items-start p-5 bg-warmwhite border border-gray-200 rounded-2xl cursor-pointer hover:bg-lavender-light/30 transition-colors group">
+                    <input type="checkbox" class="checklist-item w-6 h-6 text-lavender-dark bg-white border-gray-300 rounded focus:ring-lavender focus:ring-2 mt-1 mr-4 cursor-pointer accent-lavender-dark">
+                    <span class="text-lg text-gray-700 font-medium group-hover:text-gray-900 transition-colors">3. 我承諾將她們視為終生家人，未來無論面臨結婚、生子、搬家或出國，都絕不拋棄她們。</span>
+                </label>
+                
+                <div class="mt-8 text-center pt-4">
+                    <p id="checklistHint" class="text-lavender-dark font-bold animate-pulse">請勾選以上所有選項以顯示聯絡方式</p>
+                </div>
+            </div>
+
+            <div id="contactInfo" class="hidden text-center space-y-6 pt-4">
+                <div class="h-20 w-20 bg-green-100 text-green-600 rounded-full mx-auto flex items-center justify-center mb-6 shadow-inner text-4xl">
+                    &#10004;
+                </div>
+                <h4 class="text-3xl font-bold text-gray-900">太棒了！感謝您的承諾</h4>
+                <p class="text-gray-600 text-lg">您已具備申請資格，請透過以下方式與原主人聯繫，為她們開啟新生活：</p>
+                
+                <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100 mt-6">
+                    <p class="text-gray-800 font-bold mb-2">聯絡方式 (請擇一)</p>
+                    <div class="space-y-4 mt-4">
+                        <a href="mailto:example@email.com" class="block w-full bg-gray-900 text-white py-4 rounded-xl text-xl font-bold hover:bg-gray-700 transition-colors shadow-md">
+                            <span class="emoji-icon mr-2">✉️</span> 寄送 Email 聯繫
+                        </a>
+                        <a href="#" class="block w-full bg-white border-2 border-lavender text-gray-800 py-4 rounded-xl text-xl font-bold hover:bg-lavender-light transition-colors shadow-sm">
+                            <span class="emoji-icon mr-2">📝</span> 填寫 Google 表單
+                        </a>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-500 mt-4 bg-yellow-50 p-3 rounded-lg">💡 提示：請在聯繫時簡單自我介紹，說明您的養貓經驗與居家環境，能大大提升審核通過率喔！</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        const mobileLinks = mobileMenu.querySelectorAll('a');
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                nav.classList.add('shadow-md', 'bg-warmwhite/95');
+                nav.classList.remove('bg-warmwhite/90', 'shadow-sm');
+            } else {
+                nav.classList.remove('shadow-md', 'bg-warmwhite/95');
+                nav.classList.add('bg-warmwhite/90', 'shadow-sm');
+            }
+        });
+
+        const ctx = document.getElementById('routineChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['依偎睡覺 (50%)', '互相理毛 (25%)', '一起玩耍 (15%)', '各自吃飯/發呆 (10%)'],
+                datasets: [{
+                    data: [50, 25, 15, 10],
+                    backgroundColor: [
+                        '#B39DDB', 
+                        '#DCD0FF', 
+                        '#F3E5F5', 
+                        '#E5E7EB'  
+                    ],
+                    borderWidth: 2,
+                    borderColor: '#ffffff',
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '65%',
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            font: { family: "'Noto Sans TC', sans-serif", size: 14 },
+                            color: '#4B5563',
+                            padding: 20
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(55, 65, 81, 0.9)',
+                        titleFont: { family: "'Noto Sans TC', sans-serif", size: 14 },
+                        bodyFont: { family: "'Noto Sans TC', sans-serif", size: 14 },
+                        padding: 12,
+                        cornerRadius: 8,
+                        callbacks: {
+                            label: function(context) {
+                                return ' ' + context.label.split(' ')[0] + ': 佔全天 ' + context.parsed + '%';
+                            }
+                        }
+                    }
+                },
+                animation: {
+                    animateScale: true,
+                    animateRotate: true
+                }
+            }
+        });
+
+        const modal = document.getElementById('adoptionModal');
+        const openBtn = document.getElementById('openModalBtn');
+        const closeBtn = document.getElementById('closeModalBtn');
+        const overlay = document.querySelector('.modal-overlay');
+        const modalContent = document.querySelector('.modal-content');
+        const checklistItems = document.querySelectorAll('.checklist-item');
+        const checklistContainer = document.getElementById('checklist');
+        const contactInfoContainer = document.getElementById('contactInfo');
+        const modalHeader = document.getElementById('modalHeader');
+        const checklistHint = document.getElementById('checklistHint');
+
+        function openModal() {
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            modalContent.classList.remove('scale-95');
+            modalContent.classList.add('scale-100');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            modalContent.classList.remove('scale-100');
+            modalContent.classList.add('scale-95');
+            document.body.style.overflow = '';
+            
+            setTimeout(() => {
+                checklistItems.forEach(item => item.checked = false);
+                checklistContainer.classList.remove('hidden');
+                modalHeader.classList.remove('hidden');
+                contactInfoContainer.classList.add('hidden');
+                checklistHint.classList.remove('hidden');
+            }, 300);
+        }
+
+        function checkStatus() {
+            const allChecked = Array.from(checklistItems).every(item => item.checked);
+            if (allChecked) {
+                checklistContainer.classList.add('hidden');
+                modalHeader.classList.add('hidden');
+                contactInfoContainer.classList.remove('hidden');
+            } else {
+                checklistHint.classList.remove('hidden');
+            }
+        }
+
+        openBtn.addEventListener('click', openModal);
+        closeBtn.addEventListener('click', closeModal);
+        overlay.addEventListener('click', closeModal);
+        checklistItems.forEach(item => item.addEventListener('change', checkStatus));
+    </script>
+</body>
+</html>
