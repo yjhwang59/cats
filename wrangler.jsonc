@@ -2,7 +2,6 @@
   // Cloudflare Pages + D1（靜態站 + functions/api）。請勿用 npx wrangler deploy。
   "name": "cats",
   "compatibility_date": "2025-09-27",
-  "pages_build_output_dir": ".",
   "d1_databases": [
     {
       "binding": "DB",

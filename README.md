@@ -5,7 +5,7 @@
 ## 版本
 
 - 基線版本：**v1.0.0**（改版前標記）
-- 目前版本：**v1.1.0**（站內表單 + D1 整合與優化）
+- 目前版本：**v1.2.0**（GitHub Actions 自動部署 + D1）
 
 ## 本地開發與部署
 
@@ -49,22 +49,18 @@ npx wrangler pages dev . --d1=DB=catsd1_db
 npx wrangler pages dev .
 ```
 
-### 4. 部署至 Cloudflare Pages
+### 4. 自動部署至 Cloudflare（GitHub Actions）
 
-- **手動上傳**：在 [Cloudflare Dashboard → Pages](https://dash.cloudflare.com/) 建立 Pages 專案，上傳本專案根目錄（含 `index.html`、`functions/`、圖片與影片）。
-- **Git 整合（Dashboard 連線 GitHub）**  
-  本專案是 **Pages**（靜態站 + `functions/` + D1），**不要**在 Cloudflare 的「Deploy 指令」使用 `npx wrangler deploy`（那是 Workers 用，會出現 Missing entry-point）。  
-  請在 Pages 專案設定中：
-  - **Build 指令**：留空或 `echo built`（本專案無 build 步驟）
-  - **Build 輸出目錄**：`.`（根目錄即為靜態檔案）
-  - **Deploy 指令**：改為 **`echo deployed`**（由 Pages 自己處理部署，勿用 `npx wrangler deploy`）  
-  D1 綁定需在 **Pages 專案 → Settings → Bindings** 新增 `DB` 對應至 `catsd1_db`；Production 與 Preview 都要設。
-- **GitHub Actions 部署**  
-  若改用 GitHub Actions 部署，可依 [.github/workflows/deploy-pages.yml](.github/workflows/deploy-pages.yml) 在 push 到 `main` 時執行 `wrangler pages deploy`。需在 GitHub 倉庫 **Settings → Secrets and variables → Actions** 新增：
-  - `CLOUDFLARE_API_TOKEN`：Cloudflare API Token（權限需含 Account → Cloudflare Pages: Edit、D1: Edit）
-  - `CLOUDFLARE_ACCOUNT_ID`：帳號 ID（Dashboard 網址或右側可看到）  
-  首次使用前請在 Cloudflare 建立同名 Pages 專案 `cats`，或把 workflow 裡的 `--project-name=cats` 改成你的專案名稱。
-- 部署前請確認 Production/Preview 環境皆已設定 D1 綁定，並已執行上述 migration。
+push 到 `main` 分支時，由 **GitHub Actions** 自動執行 D1 migration（可選）並部署至 Cloudflare Pages（專案名稱 `cats`）。
+
+- 工作流程：[`.github/workflows/deploy-pages.yml`](.github/workflows/deploy-pages.yml)
+- 需在 GitHub repo **Settings → Secrets and variables → Actions** 設定：
+  - `CLOUDFLARE_API_TOKEN`（權限：Account > Cloudflare Pages > Edit、D1 > Edit、Workers Scripts > Edit）
+  - `CLOUDFLARE_ACCOUNT_ID`
+- Cloudflare Dashboard 專案 **Settings → Bindings** 需新增 `DB` 對應至 `catsd1_db`；Production 與 Preview 都要設。
+- 首次部署前請確認已執行上述 D1 migration（或讓 workflow 的 D1 migration 步驟執行一次）。
+
+**首次部署檢查**：請確認 GitHub Secrets `CLOUDFLARE_API_TOKEN` 與 `CLOUDFLARE_ACCOUNT_ID` 已設定，否則 workflow 會失敗。
 
 ## 專案結構
 
