@@ -63,7 +63,7 @@ npx wrangler pages dev .
   若改用 GitHub Actions 部署，可依 [.github/workflows/deploy-pages.yml](.github/workflows/deploy-pages.yml) 在 push 到 `main` 時執行 `wrangler pages deploy`。需在 GitHub 倉庫 **Settings → Secrets and variables → Actions** 新增：
   - `CLOUDFLARE_API_TOKEN`：Cloudflare API Token（權限需含 Account → Cloudflare Pages: Edit、D1: Edit）
   - `CLOUDFLARE_ACCOUNT_ID`：帳號 ID（Dashboard 網址或右側可看到）  
-  首次使用前請在 Cloudflare 建立同名 Pages 專案 `cats-adoption`，或把 workflow 裡的 `--project-name=cats-adoption` 改成你的專案名稱。
+  首次使用前請在 Cloudflare 建立同名 Pages 專案 `cats`，或把 workflow 裡的 `--project-name=cats` 改成你的專案名稱。
 - 部署前請確認 Production/Preview 環境皆已設定 D1 綁定，並已執行上述 migration。
 
 ## 專案結構
