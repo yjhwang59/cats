@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="兩姐妹貓咪尋找一起領養的家。黑白貓姐姐與純白貓妹妹感情深厚，希望找到願意兩隻一起帶回家的有緣人。">
+    <meta property="og:title" content="尋找溫暖的家：兩姐妹的領養故事">
+    <meta property="og:description" content="兩姐妹貓咪尋找一起領養的家，希望找到願意兩隻一起帶回家的有緣人。">
+    <meta property="og:type" content="website">
     <title>尋找溫暖的家：兩姐妹的領養故事</title>
     
     <!-- Chosen Palette: Lavender Whisper (Warm White #FFFAF0, Soft Lavender #DCD0FF, Deep Lavender #B39DDB, Charcoal #374151) -->
@@ -75,7 +79,9 @@
                     <a href="#adopt" class="text-gray-600 hover:text-lavender-dark font-medium transition-colors">領養申請</a>
                 </div>
                 <div class="md:hidden flex items-center">
-                    <button id="mobileMenuBtn" class="text-3xl text-gray-600 focus:outline-none">&#9776;</button>
+                    <button id="mobileMenuBtn" class="text-3xl text-gray-600 focus:outline-none" type="button" aria-label="開啟選單" aria-expanded="false">
+                        &#9776;
+                    </button>
                 </div>
             </div>
         </div>
@@ -275,7 +281,7 @@
             <h2 class="text-4xl md:text-5xl font-bold tracking-tight">準備好給她們一個家了嗎？</h2>
             
             <p class="text-xl text-gray-300 leading-relaxed mb-8">
-                本區塊為領養申請的把關機制。我們希望確保未來的認養人具備足夠的責任心與經濟基礎。點擊下方按鈕將開啟自我檢核表，完成確認後即可獲取聯絡資訊。
+                本區塊為領養申請的把關機制。我們希望確保未來的認養人具備足夠的責任心與經濟基礎。點擊下方按鈕將開啟自我檢核表，完成確認後即可在站內填寫申請表單。
             </p>
 
             <div class="bg-gray-800 p-8 rounded-3xl text-left border border-gray-700 mb-10">
@@ -300,7 +306,7 @@
                 </ul>
             </div>
 
-            <button id="openModalBtn" class="bg-lavender text-gray-900 px-12 py-5 rounded-full text-2xl font-bold hover:bg-white transition-all shadow-[0_0_20px_rgba(220,208,255,0.4)] hover:shadow-[0_0_30px_rgba(220,208,255,0.8)] transform hover:-translate-y-1">
+            <button id="openModalBtn" class="bg-lavender text-gray-900 px-12 py-5 rounded-full text-2xl font-bold hover:bg-white transition-all shadow-[0_0_20px_rgba(220,208,255,0.4)] hover:shadow-[0_0_30px_rgba(220,208,255,0.8)] transform hover:-translate-y-1" aria-label="開啟領養資格檢核與申請表單">
                 我要申請領養
             </button>
             <p class="text-sm text-gray-500 mt-8">點擊以進行資格自我評估</p>
@@ -309,13 +315,14 @@
 
     <footer class="bg-gray-950 py-8 text-center border-t border-gray-800">
         <p class="text-gray-500 font-medium">© 2026 兩姐妹的領養計畫. 用愛終結流浪。</p>
+        <p class="text-gray-600 text-sm mt-2" aria-label="網站版本">v1.1.0</p>
     </footer>
 
     <div id="adoptionModal" class="fixed inset-0 z-50 flex items-center justify-center px-4 opacity-0 pointer-events-none modal-transition">
         <div class="absolute inset-0 bg-gray-900/80 backdrop-blur-sm transition-opacity modal-overlay"></div>
         
         <div class="bg-white rounded-[2rem] shadow-2xl max-w-xl w-full p-8 md:p-10 relative z-10 transform scale-95 transition-transform modal-content overflow-y-auto max-h-[90vh] no-scrollbar">
-            <button id="closeModalBtn" class="absolute top-6 right-6 text-gray-400 hover:text-gray-800 transition-colors text-3xl font-bold leading-none">
+            <button id="closeModalBtn" class="absolute top-6 right-6 text-gray-400 hover:text-gray-800 transition-colors text-3xl font-bold leading-none" aria-label="關閉">
                 &#10006;
             </button>
             
@@ -349,20 +356,45 @@
                     &#10004;
                 </div>
                 <h4 class="text-3xl font-bold text-gray-900">太棒了！感謝您的承諾</h4>
-                <p class="text-gray-600 text-lg">您已具備申請資格，請透過以下方式與原主人聯繫，為她們開啟新生活：</p>
+                <p class="text-gray-600 text-lg">您已具備申請資格，請填寫以下表單送出申請。我們會盡快與您聯繫。</p>
                 
-                <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100 mt-6">
-                    <p class="text-gray-800 font-bold mb-2">聯絡方式 (請擇一)</p>
-                    <div class="space-y-4 mt-4">
-                        <a href="mailto:example@email.com" class="block w-full bg-gray-900 text-white py-4 rounded-xl text-xl font-bold hover:bg-gray-700 transition-colors shadow-md">
-                            <span class="emoji-icon mr-2">✉️</span> 寄送 Email 聯繫
-                        </a>
-                        <a href="#" class="block w-full bg-white border-2 border-lavender text-gray-800 py-4 rounded-xl text-xl font-bold hover:bg-lavender-light transition-colors shadow-sm">
-                            <span class="emoji-icon mr-2">📝</span> 填寫 Google 表單
-                        </a>
+                <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100 mt-6 text-left">
+                    <form id="adoptionForm" class="space-y-4" novalidate>
+                        <div>
+                            <label for="adoptionName" class="block text-gray-800 font-semibold mb-1">姓名 <span class="text-red-500">*</span></label>
+                            <input type="text" id="adoptionName" name="name" required maxlength="50" placeholder="您的姓名"
+                                class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-lavender focus:border-lavender outline-none transition-colors"
+                                aria-required="true" aria-invalid="false">
+                            <p id="adoptionNameError" class="text-red-600 text-sm mt-1 hidden" role="alert"></p>
+                        </div>
+                        <div>
+                            <label for="adoptionContact" class="block text-gray-800 font-semibold mb-1">Email 或手機 <span class="text-red-500">*</span></label>
+                            <input type="text" id="adoptionContact" name="contact" required maxlength="100" placeholder="example@email.com 或 09xxxxxxxx"
+                                class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-lavender focus:border-lavender outline-none transition-colors"
+                                aria-required="true" aria-invalid="false">
+                            <p id="adoptionContactError" class="text-red-600 text-sm mt-1 hidden" role="alert"></p>
+                        </div>
+                        <div>
+                            <label for="adoptionMessage" class="block text-gray-800 font-semibold mb-1">訊息內容 <span class="text-red-500">*</span></label>
+                            <textarea id="adoptionMessage" name="message" required maxlength="2000" rows="4" placeholder="簡單自我介紹、養貓經驗與居家環境，能大大提升審核通過率喔！"
+                                class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-lavender focus:border-lavender outline-none transition-colors resize-y"
+                                aria-required="true" aria-invalid="false"></textarea>
+                            <p id="adoptionMessageError" class="text-red-600 text-sm mt-1 hidden" role="alert"></p>
+                        </div>
+                        <button type="submit" id="adoptionSubmitBtn" class="w-full bg-lavender-dark text-white py-4 rounded-xl text-xl font-bold hover:bg-gray-800 transition-colors shadow-md disabled:opacity-50 disabled:cursor-not-allowed" aria-busy="false" aria-live="polite">
+                            <span class="adoptionSubmitText">送出申請</span>
+                            <span id="adoptionSubmitSpinner" class="hidden">送出中…</span>
+                        </button>
+                    </form>
+                    <div id="adoptionFormSuccess" class="hidden text-center py-4">
+                        <p class="text-green-700 font-bold text-lg">已收到您的申請，我們會盡快與您聯繫！</p>
+                    </div>
+                    <div id="adoptionFormError" class="hidden text-center py-4">
+                        <p id="adoptionFormErrorText" class="text-red-600 font-medium"></p>
+                        <p class="text-gray-600 text-sm mt-2">請稍後再試，或改以 Email 聯繫我們。</p>
                     </div>
                 </div>
-                <p class="text-sm text-gray-500 mt-4 bg-yellow-50 p-3 rounded-lg">💡 提示：請在聯繫時簡單自我介紹，說明您的養貓經驗與居家環境，能大大提升審核通過率喔！</p>
+                <p class="text-sm text-gray-500 mt-4 bg-yellow-50 p-3 rounded-lg">💡 提示：填寫養貓經驗與居家環境，能大大提升審核通過率喔！</p>
             </div>
         </div>
     </div>
@@ -474,7 +506,139 @@
                 modalHeader.classList.remove('hidden');
                 contactInfoContainer.classList.add('hidden');
                 checklistHint.classList.remove('hidden');
+                resetAdoptionFormState();
             }, 300);
+        }
+
+        function resetAdoptionFormState() {
+            const form = document.getElementById('adoptionForm');
+            const successEl = document.getElementById('adoptionFormSuccess');
+            const errorEl = document.getElementById('adoptionFormError');
+            if (form) {
+                form.reset();
+                form.classList.remove('hidden');
+                ['adoptionName', 'adoptionContact', 'adoptionMessage'].forEach(id => {
+                    const input = document.getElementById(id);
+                    if (input) {
+                        input.setAttribute('aria-invalid', 'false');
+                        input.classList.remove('border-red-500');
+                    }
+                    const err = document.getElementById(id + 'Error');
+                    if (err) { err.classList.add('hidden'); err.textContent = ''; }
+                });
+            }
+            if (successEl) successEl.classList.add('hidden');
+            if (errorEl) errorEl.classList.add('hidden');
+            const btn = document.getElementById('adoptionSubmitBtn');
+            const submitText = document.querySelector('.adoptionSubmitText');
+            const spinner = document.getElementById('adoptionSubmitSpinner');
+            if (btn) btn.disabled = false;
+            if (submitText) submitText.classList.remove('hidden');
+            if (spinner) spinner.classList.add('hidden');
+        }
+
+        function validateContact(value) {
+            const trimmed = (value || '').trim();
+            if (!trimmed) return false;
+            const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed);
+            const isPhone = /^[\d\s\-+()]{8,}$/.test(trimmed.replace(/\s/g, ''));
+            return isEmail || isPhone;
+        }
+
+        function showFieldError(id, message) {
+            const input = document.getElementById(id);
+            const err = document.getElementById(id + 'Error');
+            if (input) {
+                input.setAttribute('aria-invalid', 'true');
+                input.classList.add('border-red-500');
+            }
+            if (err) {
+                err.textContent = message;
+                err.classList.remove('hidden');
+            }
+        }
+
+        function clearFieldError(id) {
+            const input = document.getElementById(id);
+            const err = document.getElementById(id + 'Error');
+            if (input) {
+                input.setAttribute('aria-invalid', 'false');
+                input.classList.remove('border-red-500');
+            }
+            if (err) { err.classList.add('hidden'); err.textContent = ''; }
+        }
+
+        const adoptionForm = document.getElementById('adoptionForm');
+        if (adoptionForm) {
+            adoptionForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const nameEl = document.getElementById('adoptionName');
+                const contactEl = document.getElementById('adoptionContact');
+                const messageEl = document.getElementById('adoptionMessage');
+                const name = (nameEl && nameEl.value || '').trim();
+                const contact = (contactEl && contactEl.value || '').trim();
+                const message = (messageEl && messageEl.value || '').trim();
+
+                ['adoptionName', 'adoptionContact', 'adoptionMessage'].forEach(clearFieldError);
+                let valid = true;
+                if (!name) {
+                    showFieldError('adoptionName', '請填寫姓名');
+                    valid = false;
+                }
+                if (!contact) {
+                    showFieldError('adoptionContact', '請填寫 Email 或手機');
+                    valid = false;
+                } else if (!validateContact(contact)) {
+                    showFieldError('adoptionContact', '請填寫有效的 Email 或手機號碼');
+                    valid = false;
+                }
+                if (!message) {
+                    showFieldError('adoptionMessage', '請填寫訊息內容');
+                    valid = false;
+                }
+                if (!valid) return;
+
+                const submitBtn = document.getElementById('adoptionSubmitBtn');
+                const submitText = document.querySelector('.adoptionSubmitText');
+                const spinner = document.getElementById('adoptionSubmitSpinner');
+                const successEl = document.getElementById('adoptionFormSuccess');
+                const errorEl = document.getElementById('adoptionFormError');
+                const errorText = document.getElementById('adoptionFormErrorText');
+                if (submitBtn) submitBtn.disabled = true;
+                if (submitBtn) submitBtn.setAttribute('aria-busy', 'true');
+                if (submitText) submitText.classList.add('hidden');
+                if (spinner) spinner.classList.remove('hidden');
+                if (errorEl) errorEl.classList.add('hidden');
+
+                try {
+                    const res = await fetch('/api/adoptions', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            name,
+                            contact,
+                            message,
+                            source_version: 'v1.1.0'
+                        })
+                    });
+                    const data = await res.json().catch(() => ({}));
+                    if (res.ok && (data.ok || data.success !== false)) {
+                        adoptionForm.classList.add('hidden');
+                        if (successEl) successEl.classList.remove('hidden');
+                    } else {
+                        if (errorText) errorText.textContent = data.error || data.message || '送出失敗，請稍後再試';
+                        if (errorEl) errorEl.classList.remove('hidden');
+                    }
+                } catch (err) {
+                    if (errorText) errorText.textContent = '網路錯誤，請檢查連線後再試';
+                    if (errorEl) errorEl.classList.remove('hidden');
+                } finally {
+                    if (submitBtn) submitBtn.disabled = false;
+                    if (submitBtn) submitBtn.setAttribute('aria-busy', 'false');
+                    if (submitText) submitText.classList.remove('hidden');
+                    if (spinner) spinner.classList.add('hidden');
+                }
+            });
         }
 
         function checkStatus() {
